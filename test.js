@@ -1,5 +1,6 @@
 import { assert } from './util.js';
-import { drawColumn, isSolidWall } from './renderer.js';
+import { drawColumn } from './renderer.js';
+import { isSolidWall } from './intersections.js';
 
 console.log("Running tests...");
 
