@@ -52,7 +52,7 @@ export class Point2D {
      * values of the object, in that order.
      */
     GetXY() {
-        return [x, y]
+        return [x, y];
     }
 }
 /**

@@ -24,13 +24,15 @@ export function isSolidWall(intX, intY, dirX, dirY, map) {
     return wallType === 1 ? true : false;
 }
 /**
- * 
+ * Finds the first wall that we intersect with from a given position and angle of the camera.
+ * NOTE: The function will not recognize an intersection if you are currently staring at a wall.
  * @param {RayAngle} rayAngle The angle of the ray.
  * @param {Point2D} position The point of the camera.
+ * @param {number[][]} map The world map.
  * @returns {Point2D} The point of intersection between
  * a ray from the camera's position at the given angle.
  */
-export function findWallIntersect(rayAngle, position) {
+export function findWallIntersect(rayAngle, position, map) {
     const angle = rayAngle.GetRayAngle();
     let tileStepX = 0;
     let tileStepY = 0;
@@ -51,10 +53,34 @@ export function findWallIntersect(rayAngle, position) {
             tileStepX = 1;
             tileStepY = -1;
             break;
-        // This should be when we have an orthogonal ray.
+        // The below code is for when we have an orthogonal ray.
+        case (angle === 90):
+            tileStepX = 0;
+            tileStepY = -1;
+            break;
+        case (angle === 180):
+            tileStepX = -1;
+            tileStepY = 0;
+            break;
+        case (angle === 270):
+            tileStepX = 0;
+            tileStepY = 1;
+            break;
+        // RayAngle class clamps our max angle to being 359, so 360 would wrap back around to 0.
+        case (angle === 0):
+            tileStepX = 1;
+            tileStepY = 0;
+            break;
         default:
-            // TODO
-            break
+            throw new Error(`Invalid argument passed to findWallIntersect function.\nGiven angle ${angle}`);
+            break;
+    }
+    const position = position.GetXY();
+    const positionX = position[0];
+    const positionY = position[1];
+    // TODO deal with what happens when there is an intersection further out.
+    if (isSolidWall(positionX, positionY, tileStepX, tileStepY, map)) {
+        // we found an intersection.
     }
 }
 /**
