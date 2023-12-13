@@ -1,4 +1,5 @@
 import { BLOCK_SIZE } from "./constants.js";
+import { RayAngle, Point2D } from "./util.js";
 
 /**
  * 
@@ -21,28 +22,37 @@ export function isSolidWall(intX, intY, dirX, dirY, map) {
 }
 /**
  * 
- * @param {number} rayAngle 
- * @returns {Pixel}
+ * @param {RayAngle} rayAngle The angle of the ray.
+ * @param {Point2D} position The point of the camera.
+ * @returns {Point2D} The point of intersection between
+ * a ray from the camera's position at the given angle.
  */
 export function findWallIntersect(rayAngle, position) {
+    const angle = rayAngle.GetRayAngle();
     let tileStepX = 0;
     let tileStepY = 0;
-    if (rayAngle > 0 && rayAngle < 90) {
-        tileStepX = 1;
-        tileStepY = 1;
-    } else if (rayAngle > 90 && rayAngle < 180) {
-        tileStepX = -1;
-        tileStepY = 1;
-    } else if (rayAngle > 180 && rayAngle < 270) {
-        tileStepX = -1;
-        tileStepY = -1;
-    } else if (rayAngle > 270 && rayAngle < 360) {
-        tileStepX = 1;
-        tileStepY = -1;
-    } else {
-        // TODO: orthogonal ray, special case.
+    switch (angle) {
+        case (angle > 0 && angle < 90):
+            tileStepX = 1;
+            tileStepY = 1;
+            break;
+        case (angle > 90 && angle < 180):
+            tileStepX = -1;
+            tileStepY = 1;
+            break;
+        case (angle > 180 && angle < 270):
+            tileStepX = -1;
+            tileStepY = -1;
+            break;
+        case (angle > 270 && angle < 360):
+            tileStepX = 1;
+            tileStepY = -1;
+            break;
+        // This should be when we have an orthogonal ray.
+        default:
+            // TODO
+            break
     }
-
 }
 /**
  * 
