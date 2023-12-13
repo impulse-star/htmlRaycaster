@@ -1,5 +1,5 @@
 import { assert } from '../util.js';
-import { isSolidWall } from '../intersections.js';
+import { findWallIntersect, isSolidWall } from '../intersections.js';
 
 console.log("Running tests...");
 
@@ -16,6 +16,8 @@ const testMap =
     [1, 0, 0, 0, 1],
     [1, 1, 1, 1, 1],
 ];
+
+// TESTING isSolidWall
 // Empty and Empty Corner
 assert(() => isSolidWall(128, 128, 1, -1, testMap), false);
 assert(() => isSolidWall(128, 128, 1, 1, testMap), false);
@@ -64,5 +66,9 @@ assert(() => isSolidWall(48, 48, 1, 1, testMap), true);
 assert(() => isSolidWall(48, 48, -1, 1, testMap), true);
 assert(() => isSolidWall(48, 48, 1, -1, testMap), true);
 assert(() => isSolidWall(48, 48, -1, -1, testMap), true);
+
+// TESTING findWallIntersections
+// Orthogonal Ray
+// assert(() => findWallIntersect());
 
 console.log("Finished Running Tests.");

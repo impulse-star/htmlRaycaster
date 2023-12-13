@@ -25,7 +25,11 @@ export function isSolidWall(intX, intY, dirX, dirY, map) {
 }
 /**
  * Finds the first wall that we intersect with from a given position and angle of the camera.
- * NOTE: The function will not recognize an intersection if you are currently staring at a wall.
+ * 
+ * NOTE: The function will not recognize an intersection with a wall that the camera currently
+ * occupies. If the camera is standing in a block where a wall is, the first intersection found
+ * will be one that is beyond the currently stood in wall. This should only concern you if you
+ * are out of bounds, which shouldn't happen normally.
  * @param {RayAngle} rayAngle The angle of the ray.
  * @param {Point2D} position The point of the camera.
  * @param {number[][]} map The world map.
