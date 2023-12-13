@@ -31,6 +31,29 @@ export class Point2D {
         this.#x = x;
         this.#y = y;
     }
+
+    SetX(xValue) {
+        if ((typeof xValue) !== 'number') {
+            throw new Error("Invalid argument provided to SetX");
+        }
+        this.#x = xValue;
+    }
+
+    SetY(yValue) {
+        if ((typeof yValue) !== 'number') {
+            throw new Error("Invalid argument provided to SetX");
+        }
+        this.#y = yValue;
+    }
+
+    /**
+     * 
+     * @returns {[number, number]} A 2-element array containing the x and y
+     * values of the object, in that order.
+     */
+    GetXY() {
+        return [x, y]
+    }
 }
 /**
  * Represents a RayAngle measured in degrees. The angle itself is constrained to [0, 359].

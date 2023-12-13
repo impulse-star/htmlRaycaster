@@ -1,14 +1,14 @@
 import { RECT_WIDTH, BLOCK_SIZE } from "./constants.js";
+import { Pixel } from "./util.js";
 
 /**
  * 
  * @param {CanvasRenderingContext2D} ctx 
- * @param {number} x 
- * @param {number} y 
+ * @param {Pixel} pixel 
  */
-export function drawPixel(ctx, x, y) {
+export function drawPixel(ctx, pixel) {
     ctx.fillStyle = '#FF00FF';
-    ctx.fillRect(x, y, 1, 1);
+    ctx.fillRect(pixel.x, pixel.y, 1, 1);
 }
 /**
  * 
