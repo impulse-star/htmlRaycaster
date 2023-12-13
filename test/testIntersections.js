@@ -1,6 +1,5 @@
-import { assert } from './util.js';
-import { drawColumn } from './renderer.js';
-import { isSolidWall } from './intersections.js';
+import { assert } from '../util.js';
+import { isSolidWall } from '../intersections.js';
 
 console.log("Running tests...");
 
@@ -8,10 +7,6 @@ console.log("Running tests...");
 const canvas = document.getElementById('MYCANVAS');
 const context = canvas.getContext('2d');
 
-drawColumn(canvas, context, 720, 2);
-drawColumn(canvas, context, 480, 3);
-drawColumn(canvas, context, 360, 4);
-drawColumn(canvas, context, 0, 6);
 // dirY being positive means going down
 const testMap =
 [
