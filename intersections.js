@@ -1,4 +1,4 @@
-import { BLOCK_SIZE } from "./constants.js";
+import { BLOCK_SIZE, MAX_BLOCK_TRAVERSAL_ITERATIONS } from "./constants.js";
 import { RayAngle, Point2D } from "./util.js";
 
 /**
@@ -29,7 +29,7 @@ export function isSolidWall(intX, intY, dirX, dirY, map) {
  * @param {RayAngle} rayAngle The angle of the ray.
  * @param {Point2D} position The point of the camera.
  * @param {number[][]} map The world map.
- * @returns {Point2D} The point of intersection between
+ * @returns {Point2D | null} The point of intersection between
  * a ray from the camera's position at the given angle.
  */
 export function findWallIntersect(rayAngle, position, map) {
@@ -73,17 +73,26 @@ export function findWallIntersect(rayAngle, position, map) {
             break;
         default:
             throw new Error(`Invalid argument passed to findWallIntersect function.\nGiven angle ${angle}`);
-            break;
     }
-    const position = position.GetXY();
-    const positionX = position[0];
-    const positionY = position[1];
-    // TODO deal with what happens when there is an intersection further out.
-    if (isSolidWall(positionX, positionY, tileStepX, tileStepY, map)) {
-        // we found an intersection.
+
+    const positionXY = position.GetXY();
+    let positionX = positionXY[0];
+    let positionY = positionXY[1];
+
+    let iterations = 0;
+    let solidWallFound = isSolidWall(positionX, positionY, tileStepX, tileStepY, map);
+    while (iterations < MAX_BLOCK_TRAVERSAL_ITERATIONS && !solidWallFound) {
+        // Haven't found a solid wall yet.
+        positionX = positionX + BLOCK_SIZE;
+        positionY = positionY + BLOCK_SIZE;
+
+        solidWallFound = isSolidWall(positionX, positionY, tileStepX, tileStepY, map);
+        iterations++;
+    }
+    if (solidWallFound) {
+        return new Point2D(positionX, positionY);
     } else {
-        // Loop through a certain number of times until you find an intersection
-        // or you hit the render distance limit.
+        return null;
     }
 }
 /**
