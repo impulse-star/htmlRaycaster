@@ -81,6 +81,9 @@ export function findWallIntersect(rayAngle, position, map) {
     // TODO deal with what happens when there is an intersection further out.
     if (isSolidWall(positionX, positionY, tileStepX, tileStepY, map)) {
         // we found an intersection.
+    } else {
+        // Loop through a certain number of times until you find an intersection
+        // or you hit the render distance limit.
     }
 }
 /**
