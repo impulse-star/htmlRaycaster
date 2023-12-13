@@ -2,13 +2,16 @@ import { BLOCK_SIZE } from "./constants.js";
 import { RayAngle, Point2D } from "./util.js";
 
 /**
- * 
+ * Determines if the wall that is being seen in the next block is solid or not.
+ * This is done by taking in the x and y position of the camera, and the relative
+ * direction of the viewing angle. (+) dirX means looking right, (-) dirX means
+ * looking left. (+) dirY means looking up, (-) dirY means looking down.
  * @param {number} intX 
  * @param {number} intY 
  * @param {number} dirX 
  * @param {number} dirY 
  * @param {number[][]} map
- * @returns {Boolean}
+ * @returns {Boolean} A boolean determining if what we are looking at is a solid wall.
  */
 export function isSolidWall(intX, intY, dirX, dirY, map) {
     const blockX = Math.trunc(Math.trunc(intX / BLOCK_SIZE) + dirX / 2);
