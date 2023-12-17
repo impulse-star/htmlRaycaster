@@ -75,5 +75,6 @@ assert(() => isSolidWall(96, 96, -1, -1, testMap), true);
 // TESTING findWallIntersections
 // Orthogonal Ray
 assert(() => findWallIntersect(new RayAngle(), new Point2D(248, 96), testMap).GetY(), 96);
+assert(() => findWallIntersect(new RayAngle(), new Point2D(248, 96), testMap).GetX(), 256);
 
 console.log("Finished Running Tests.");
