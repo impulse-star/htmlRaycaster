@@ -1,4 +1,4 @@
-import { assert } from '../util.js';
+import { Point2D, RayAngle, assert } from '../util.js';
 import { findWallIntersect, isSolidWall } from '../intersections.js';
 
 console.log("Running tests...");
@@ -66,9 +66,14 @@ assert(() => isSolidWall(48, 48, 1, 1, testMap), true);
 assert(() => isSolidWall(48, 48, -1, 1, testMap), true);
 assert(() => isSolidWall(48, 48, 1, -1, testMap), true);
 assert(() => isSolidWall(48, 48, -1, -1, testMap), true);
+// Test without being right on a corner of a block
+assert(() => isSolidWall(96, 96, 1, 1, testMap), false);
+assert(() => isSolidWall(96, 96, -1, 1, testMap), true);
+assert(() => isSolidWall(96, 96, 1, -1, testMap), true);
+assert(() => isSolidWall(96, 96, -1, -1, testMap), true);
 
 // TESTING findWallIntersections
 // Orthogonal Ray
-// assert(() => findWallIntersect());
+assert(() => findWallIntersect(new RayAngle(), new Point2D(248, 96), testMap).GetY(), 96);
 
 console.log("Finished Running Tests.");

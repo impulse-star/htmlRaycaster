@@ -23,6 +23,9 @@ export class Pixel {
         this.y = y;
     }
 }
+/**
+ * A class that represents a point in Two-Dimensional space.
+ */
 export class Point2D {
     #x;
     #y;
@@ -52,7 +55,22 @@ export class Point2D {
      * values of the object, in that order.
      */
     GetXY() {
-        return [x, y];
+        return [this.#x, this.#y];
+    }
+
+    /**
+     * @returns {number} The Y value of the Point.
+     */
+    GetY() {
+        return this.#y;
+    }
+
+    /**
+     * 
+     * @returns {number} The X value of the point.
+     */
+    GetX() {
+        return this.#x;
     }
 }
 /**
@@ -62,9 +80,9 @@ export class Point2D {
 export class RayAngle {
     #rayAngle;
 
-    constructor() {
+    constructor(angle = 0) {
         // Initialize to pointing right.
-        this.#rayAngle = 0;
+        this.#rayAngle = angle;
     }
 
     /**

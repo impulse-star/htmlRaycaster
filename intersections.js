@@ -40,43 +40,33 @@ export function findWallIntersect(rayAngle, position, map) {
     const angle = rayAngle.GetRayAngle();
     let tileStepX = 0;
     let tileStepY = 0;
-    switch (angle) {
-        case (angle > 0 && angle < 90):
-            tileStepX = 1;
-            tileStepY = 1;
-            break;
-        case (angle > 90 && angle < 180):
-            tileStepX = -1;
-            tileStepY = 1;
-            break;
-        case (angle > 180 && angle < 270):
-            tileStepX = -1;
-            tileStepY = -1;
-            break;
-        case (angle > 270 && angle < 360):
-            tileStepX = 1;
-            tileStepY = -1;
-            break;
-        // The below code is for when we have an orthogonal ray.
-        case (angle === 90):
-            tileStepX = 0;
-            tileStepY = -1;
-            break;
-        case (angle === 180):
-            tileStepX = -1;
-            tileStepY = 0;
-            break;
-        case (angle === 270):
-            tileStepX = 0;
-            tileStepY = 1;
-            break;
-        // RayAngle class clamps our max angle to being 359, so 360 would wrap back around to 0.
-        case (angle === 0):
-            tileStepX = 1;
-            tileStepY = 0;
-            break;
-        default:
-            throw new Error(`Invalid argument passed to findWallIntersect function.\nGiven angle ${angle}`);
+    if (angle > 0 && angle < 90) {
+        tileStepX = 1;
+        tileStepY = 1;
+    } else if (angle > 90 && angle < 180) {
+        tileStepX = -1;
+        tileStepY = 1;
+    } else if (angle > 180 && angle < 270) {
+        tileStepX = -1;
+        tileStepY = -1;
+    } else if (angle > 270 && angle < 360) {
+        tileStepX = 1;
+        tileStepY = -1;
+    } else if (angle === 90) {
+        tileStepX = 0;
+        tileStepY = -1;
+    } else if (angle === 180) {
+        tileStepX = -1;
+        tileStepY = 0;
+    } else if (angle === 270) {
+        tileStepX = 0;
+        tileStepY = 1;
+    // There's no 360, since RayAngle wraps that back around to 0.
+    } else if (angle === 0) {
+        tileStepX = 1;
+        tileStepY = 0;
+    } else {
+        throw new Error(`Invalid argument passed to findWallIntersect function.\nGiven angle ${angle}`);
     }
 
     const positionXY = position.GetXY();
@@ -86,9 +76,14 @@ export function findWallIntersect(rayAngle, position, map) {
     let iterations = 0;
     let solidWallFound = isSolidWall(positionX, positionY, tileStepX, tileStepY, map);
     while (iterations < MAX_BLOCK_TRAVERSAL_ITERATIONS && !solidWallFound) {
-        // Haven't found a solid wall yet.
-        positionX = positionX + BLOCK_SIZE;
-        positionY = positionY + BLOCK_SIZE;
+        // Maybe you could one line this, or make it cleaner. To my eyes,
+        // this is clean enough.
+        if (tileStepX) {
+            positionX = positionX + (BLOCK_SIZE * tileStepX);
+        }
+        if (tileStepY) {
+            positionY = positionY + (BLOCK_SIZE * tileStepY);
+        }
 
         solidWallFound = isSolidWall(positionX, positionY, tileStepX, tileStepY, map);
         iterations++;
