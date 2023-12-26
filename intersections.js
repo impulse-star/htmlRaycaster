@@ -89,6 +89,8 @@ export function findWallIntersect(rayAngle, position, map) {
         iterations++;
     }
     if (solidWallFound) {
+        const pointWhereSolidWallWasFound = new Point2D(positionX, positionY);
+        const exactPositionOfSolidWall = findSideOfBlockCoordinates(pointWhereSolidWallWasFound, DIRECTION.UP);
         return new Point2D(positionX, positionY);
     } else {
         return null;
@@ -98,8 +100,27 @@ export function findWallIntersect(rayAngle, position, map) {
  * 
  * @param {number} cameraX The X position of the camera in floating point.
  * @param {number} cameraY The Y position of the camera in floating point.
- * @returns {{x: number, y: number}} An object containing the X and Y coordinates of the block.
+ * @returns {{x: number, y: number}} An object containing the X and Y 
+ * coordinates of the camera in the block.
  */
 export function findGridPosition(cameraX, cameraY) {
     return { x: cameraX % BLOCK_SIZE, y: cameraY % BLOCK_SIZE };
+}
+
+class DIRECTION {
+    static UP = 'Up';
+    static DOWN = 'Down';
+    static LEFT = 'Left';
+    static RIGHT = 'Right';
+}
+
+/**
+ * 
+ * @param {Point2D} point The point which exists in a block.
+ * @param {'Up' | 'Down' | 'Left' | 'Right'} direction 
+ * @returns {Point2D} A point that is along the "direction" side
+ * of the block that is located at point's location.
+ */
+export function findSideOfBlockCoordinates(point, direction) {
+    // pass
 }
