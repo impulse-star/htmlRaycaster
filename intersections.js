@@ -15,14 +15,25 @@ import { RayAngle, Point2D } from "./util.js";
  */
 export function isSolidWall(intX, intY, dirX, dirY, map) {
     // TODO Why are X and Y coords int?
-    const blockX = Math.trunc(Math.trunc(intX / BLOCK_SIZE) + dirX / 2);
-    const blockY = Math.trunc(Math.trunc(intY / BLOCK_SIZE) + dirY / 2);
+    let blockX = null;
+    let blockY = null;
+    if (intX % BLOCK_SIZE === 0 || intY % BLOCK_SIZE === 0) {
+        // were right on a gridline, so some unique logic has to happen.
+        blockX = Math.trunc(Math.trunc(intX / BLOCK_SIZE) + dirX / 2);
+        blockY = Math.trunc(Math.trunc(intY / BLOCK_SIZE) + dirY / 2);
+    } else {
+        blockX = Math.trunc(intX / BLOCK_SIZE + dirX);
+        blockY = Math.trunc(intY / BLOCK_SIZE + dirY);
+    }
+    if (blockX === null || blockY === null) {
+        throw new Error("BlockX/BlockY variables not set.");
+    }
     // We can fix thiss later but im guessing that if we are out of bounds we dont have any solid walls.
-    if (blockX >= map.length || blockX < 0) return false;
-    if (blockY >= map[0]?.length || blockY < 0) return false;
-
-    const wallType = map[blockX][blockY];
-    return wallType === 1 ? true : false;
+    if (blockY > map.length || blockY < 0) return false;
+    if (blockX > map[blockY]?.length || blockX < 0) return false;
+    
+    const wallType = map[blockY][blockX];
+    return wallType === 1;
 }
 /**
  * Finds the first wall that we intersect with from a given position and angle of the camera.
@@ -116,18 +127,23 @@ export function findWallIntersect(rayAngle, position, map) {
             // X has to be fixed.
             const resultingX = pointWhereSolidWallWasFound.GetX();
             // good luck figuring this out later
-            const resultingY = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetY() - BLOCK_SIZE)/BLOCK_SIZE) * BLOCK_SIZE;
+            const resultingY = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetY())/BLOCK_SIZE) * BLOCK_SIZE;
 
             exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
         } else if (directionToClampTo === DIRECTION.RIGHT) {
-            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX() - BLOCK_SIZE)/BLOCK_SIZE) * BLOCK_SIZE;
+            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX())/BLOCK_SIZE) * BLOCK_SIZE;
             const resultingY = pointWhereSolidWallWasFound.GetY();
 
             exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
         } else if (directionToClampTo === DIRECTION.LEFT) {
-            console.log(pointWhereSolidWallWasFound.GetX());
-            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX())/BLOCK_SIZE) * BLOCK_SIZE;
+            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX() - BLOCK_SIZE)/BLOCK_SIZE) * BLOCK_SIZE;
             const resultingY = pointWhereSolidWallWasFound.GetY();
+
+            exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
+        } else if (directionToClampTo === DIRECTION.UP) {
+            const resultingX = pointWhereSolidWallWasFound.GetX();
+            // good luck figuring this out later
+            const resultingY = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetY() - BLOCK_SIZE)/BLOCK_SIZE) * BLOCK_SIZE;
 
             exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
         }

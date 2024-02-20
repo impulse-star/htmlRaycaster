@@ -22,6 +22,57 @@ const testMap =
 // 64 units but right now they are... whoops...
 
 // TESTING isSolidWall
+// I needed  better test cases so thats why I made these new ones,
+// old ones left below just in case :)
+const testMapEmpty =
+[
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+];
+// right
+assert(() => isSolidWall(96, 96, 1, 0, testMapEmpty), false);
+// down
+assert(() => isSolidWall(96, 96, 0, 1, testMapEmpty), false);
+// left
+assert(() => isSolidWall(96, 96, -1, 0, testMapEmpty), false);
+// up
+assert(() => isSolidWall(96, 96, 0, -1, testMapEmpty), false);
+// top right
+assert(() => isSolidWall(96, 96, 1, -1, testMapEmpty), false);
+// top left
+assert(() => isSolidWall(96, 96, -1, -1, testMapEmpty), false);
+// bot left
+assert(() => isSolidWall(96, 96, -1, 1, testMapEmpty), false);
+// bot right
+assert(() => isSolidWall(96, 96, 1, 1, testMapEmpty), false);
+// nowhere
+assert(() => isSolidWall(96, 96, 0, 0, testMapEmpty), false);
+const testMapFull =
+[
+    [1, 1, 1],
+    [1, 0, 1],
+    [1, 1, 1]
+];
+// right
+assert(() => isSolidWall(96, 96, 1, 0, testMapFull), true);
+// down
+assert(() => isSolidWall(96, 96, 0, 1, testMapFull), true);
+// left
+assert(() => isSolidWall(96, 96, -1, 0, testMapFull), true);
+// up
+assert(() => isSolidWall(96, 96, 0, -1, testMapFull), true);
+// top right
+assert(() => isSolidWall(96, 96, 1, -1, testMapFull), true);
+// top left
+assert(() => isSolidWall(96, 96, -1, -1, testMapFull), true);
+// bot left
+assert(() => isSolidWall(96, 96, -1, 1, testMapFull), true);
+// bot right
+assert(() => isSolidWall(96, 96, 1, 1, testMapFull), true);
+// nowhere
+assert(() => isSolidWall(96, 96, 0, 0, testMapFull), false);
+// old tests
 // Empty and Empty Corner
 assert(() => isSolidWall(128, 128, 1, -1, testMap), false);
 assert(() => isSolidWall(128, 128, 1, 1, testMap), false);
@@ -66,7 +117,7 @@ assert(() => isSolidWall(128, 256, 1, 1, testMap), true);
 assert(() => isSolidWall(96, 256, -1, 1, testMap), true);
 assert(() => isSolidWall(128, 256, -1, 1, testMap), true);
 // shouldnt happen but this is if no intersections mid wall.
-assert(() => isSolidWall(48, 48, 1, 1, testMap), true);
+assert(() => isSolidWall(48, 48, 1, 1, testMap), false);
 assert(() => isSolidWall(48, 48, -1, 1, testMap), true);
 assert(() => isSolidWall(48, 48, 1, -1, testMap), true);
 assert(() => isSolidWall(48, 48, -1, -1, testMap), true);
@@ -76,16 +127,10 @@ assert(() => isSolidWall(96, 96, -1, 1, testMap), true);
 assert(() => isSolidWall(96, 96, 1, -1, testMap), true);
 assert(() => isSolidWall(96, 96, -1, -1, testMap), true);
 // Test this weird case I just found
-assert(() => isSolidWall(248, 96, 1, 0, testMap), false);
-assert(() => isSolidWall(248, 160, 1, 0, testMap), false);
-assert(() => isSolidWall(248, 224, 1, 0, testMap), true);
-// LOL Looks like i need better test cases, so here they are:
-const testMapEmpty =
-[
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-];
+assert(() => isSolidWall(248, 96, 0, 1, testMap), false);
+assert(() => isSolidWall(248, 160, 0, 1, testMap), false);
+assert(() => isSolidWall(248, 224, 0, 1, testMap), true);
+
 
 // TESTING findWallIntersections
 // Orthogonal Ray
@@ -96,7 +141,10 @@ assert(() => findWallIntersect(new RayAngle(), new Point2D(248, 96), testMap).Ge
 assert(() => findWallIntersect(new RayAngle(270), new Point2D(248, 96), testMap).GetX(), 248);
 assert(() => findWallIntersect(new RayAngle(270), new Point2D(248, 96), testMap).GetY(), 256);
 // ray pointing left
-// assert(() => findWallIntersect(new RayAngle(180), new Point2D(248, 96), testMap).GetX(), 64);
-// assert(() => findWallIntersect(new RayAngle(180), new Point2D(248, 96), testMap).GetY(), 96);
+assert(() => findWallIntersect(new RayAngle(180), new Point2D(248, 96), testMap).GetX(), 64);
+assert(() => findWallIntersect(new RayAngle(180), new Point2D(248, 96), testMap).GetY(), 96);
+// ray pointing up
+assert(() => findWallIntersect(new RayAngle(90), new Point2D(248, 96), testMap).GetX(), 248);
+assert(() => findWallIntersect(new RayAngle(90), new Point2D(248, 96), testMap).GetY(), 64);
 
 console.log("Finished Running Tests.");
