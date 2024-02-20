@@ -14,6 +14,7 @@ import { RayAngle, Point2D } from "./util.js";
  * @returns {Boolean} A boolean determining if what we are looking at is a solid wall.
  */
 export function isSolidWall(intX, intY, dirX, dirY, map) {
+    // TODO Why are X and Y coords int?
     const blockX = Math.trunc(Math.trunc(intX / BLOCK_SIZE) + dirX / 2);
     const blockY = Math.trunc(Math.trunc(intY / BLOCK_SIZE) + dirY / 2);
     // We can fix thiss later but im guessing that if we are out of bounds we dont have any solid walls.
@@ -38,31 +39,40 @@ export function isSolidWall(intX, intY, dirX, dirY, map) {
  */
 export function findWallIntersect(rayAngle, position, map) {
     const angle = rayAngle.GetRayAngle();
+    let directionToClampTo = null;
     let tileStepX = 0;
     let tileStepY = 0;
     if (angle > 0 && angle < 90) {
+        directionToClampTo = DIRECTION.UPRIGHT;
         tileStepX = 1;
         tileStepY = 1;
     } else if (angle > 90 && angle < 180) {
+        directionToClampTo = DIRECTION.UPLEFT;
         tileStepX = -1;
         tileStepY = 1;
     } else if (angle > 180 && angle < 270) {
+        directionToClampTo = DIRECTION.DOWNLEFT;
         tileStepX = -1;
         tileStepY = -1;
     } else if (angle > 270 && angle < 360) {
+        directionToClampTo = DIRECTION.DOWNRIGHT;
         tileStepX = 1;
         tileStepY = -1;
     } else if (angle === 90) {
+        directionToClampTo = DIRECTION.UP;
         tileStepX = 0;
         tileStepY = -1;
     } else if (angle === 180) {
+        directionToClampTo = DIRECTION.LEFT;
         tileStepX = -1;
         tileStepY = 0;
     } else if (angle === 270) {
+        directionToClampTo = DIRECTION.DOWN;
         tileStepX = 0;
         tileStepY = 1;
     // There's no 360, since RayAngle wraps that back around to 0.
     } else if (angle === 0) {
+        directionToClampTo = DIRECTION.RIGHT;
         tileStepX = 1;
         tileStepY = 0;
     } else {
@@ -90,8 +100,42 @@ export function findWallIntersect(rayAngle, position, map) {
     }
     if (solidWallFound) {
         const pointWhereSolidWallWasFound = new Point2D(positionX, positionY);
-        const exactPositionOfSolidWall = findSideOfBlockCoordinates(pointWhereSolidWallWasFound, DIRECTION.UP);
-        return new Point2D(positionX, positionY);
+        // TODO change how this works.
+        // This needs to be redone, you'd have to calculate which wall the point found
+        // is closest too(and also a case for what happens when the ray perfectly
+        // intersects a corner.)
+        // ALSSO WHY IS IT FORCED TO BE DIRECTION.UP??? HELO???
+
+        // Sanity check, shouldnt be the case:
+        if (!directionToClampTo) {
+            throw new Error("directionToClampTo is not set!");
+        }
+
+        let exactPositionOfSolidWall = null;
+        if (directionToClampTo === DIRECTION.DOWN) {
+            // X has to be fixed.
+            const resultingX = pointWhereSolidWallWasFound.GetX();
+            // good luck figuring this out later
+            const resultingY = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetY() - BLOCK_SIZE)/BLOCK_SIZE) * BLOCK_SIZE;
+
+            exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
+        } else if (directionToClampTo === DIRECTION.RIGHT) {
+            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX() - BLOCK_SIZE)/BLOCK_SIZE) * BLOCK_SIZE;
+            const resultingY = pointWhereSolidWallWasFound.GetY();
+
+            exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
+        } else if (directionToClampTo === DIRECTION.LEFT) {
+            console.log(pointWhereSolidWallWasFound.GetX());
+            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX())/BLOCK_SIZE) * BLOCK_SIZE;
+            const resultingY = pointWhereSolidWallWasFound.GetY();
+
+            exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
+        }
+
+        if (!exactPositionOfSolidWall) {
+            throw new Error("Undefined return value for findWallIntersect");
+        }
+        return new Point2D(exactPositionOfSolidWall.GetX(), exactPositionOfSolidWall.GetY());
     } else {
         return null;
     }
@@ -112,15 +156,8 @@ class DIRECTION {
     static DOWN = 'Down';
     static LEFT = 'Left';
     static RIGHT = 'Right';
-}
-
-/**
- * 
- * @param {Point2D} point The point which exists in a block.
- * @param {'Up' | 'Down' | 'Left' | 'Right'} direction 
- * @returns {Point2D} A point that is along the "direction" side
- * of the block that is located at point's location.
- */
-export function findSideOfBlockCoordinates(point, direction) {
-    // pass
+    static UPLEFT = 'UpLeft';
+    static UPRIGHT = 'UpRight';
+    static DOWNLEFT = 'DownLeft';
+    static DOWNRIGHT = 'DownRight';
 }

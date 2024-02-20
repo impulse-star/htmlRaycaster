@@ -1,5 +1,5 @@
 import { Point2D, RayAngle, assert } from '../util.js';
-import { findSideOfBlockCoordinates, findWallIntersect, isSolidWall } from '../intersections.js';
+import { findWallIntersect, isSolidWall } from '../intersections.js';
 
 console.log("Running tests...");
 
@@ -16,6 +16,10 @@ const testMap =
     [1, 0, 0, 0, 1],
     [1, 1, 1, 1, 1],
 ];
+
+// TODO man i realize i made a huge mistake with these tests,
+// BASICALLY they shouldn't be dependent on the block size being
+// 64 units but right now they are... whoops...
 
 // TESTING isSolidWall
 // Empty and Empty Corner
@@ -71,14 +75,28 @@ assert(() => isSolidWall(96, 96, 1, 1, testMap), false);
 assert(() => isSolidWall(96, 96, -1, 1, testMap), true);
 assert(() => isSolidWall(96, 96, 1, -1, testMap), true);
 assert(() => isSolidWall(96, 96, -1, -1, testMap), true);
-
-// TESTING findSideOfBlockCoordinates
-assert(() => findSideOfBlockCoordinates(new Point2D(248, 96), 'Up').GetX(), 248);
-assert(() => findSideOfBlockCoordinates(new Point2D(248, 96), 'Up').GetY(), 64);
+// Test this weird case I just found
+assert(() => isSolidWall(248, 96, 1, 0, testMap), false);
+assert(() => isSolidWall(248, 160, 1, 0, testMap), false);
+assert(() => isSolidWall(248, 224, 1, 0, testMap), true);
+// LOL Looks like i need better test cases, so here they are:
+const testMapEmpty =
+[
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+];
 
 // TESTING findWallIntersections
 // Orthogonal Ray
+// ray pointing right
+assert(() => findWallIntersect(new RayAngle(), new Point2D(248, 96), testMap).GetX(), 256);
 assert(() => findWallIntersect(new RayAngle(), new Point2D(248, 96), testMap).GetY(), 96);
-// assert(() => findWallIntersect(new RayAngle(), new Point2D(248, 96), testMap).GetX(), 256);
+// ray pointing down
+assert(() => findWallIntersect(new RayAngle(270), new Point2D(248, 96), testMap).GetX(), 248);
+assert(() => findWallIntersect(new RayAngle(270), new Point2D(248, 96), testMap).GetY(), 256);
+// ray pointing left
+// assert(() => findWallIntersect(new RayAngle(180), new Point2D(248, 96), testMap).GetX(), 64);
+// assert(() => findWallIntersect(new RayAngle(180), new Point2D(248, 96), testMap).GetY(), 96);
 
 console.log("Finished Running Tests.");
