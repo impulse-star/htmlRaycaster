@@ -14,6 +14,11 @@ import { RayAngle, Point2D } from "./util.js";
  * @returns {Boolean} A boolean determining if what we are looking at is a solid wall.
  */
 export function isSolidWall(intX, intY, dirX, dirY, map) {
+    // TODO okay this one is important, your code actually doesn't work
+    // if the angle of your ray is very shallow, so it would
+    // intersect the top wall first, but the corner is free, this
+    // function would return false despite intersecting the wall at
+    // the top.
     // TODO Why are X and Y coords int?
     let blockX = null;
     let blockY = null;
