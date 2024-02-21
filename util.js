@@ -106,5 +106,26 @@ export class RayAngle {
     GetRayAngle() {
         return this.#rayAngle;
     }
+
+    /**
+     * Converts a given angle in degrees to its radian angle representation.
+     * @param {number} degrees 
+     */
+    static ToRadians(degrees) {
+        return (degrees/180) * Math.PI;
+    }
+
+    /**
+     * Converts a given radian angle measurement to its degree representation.
+     * @param {number} radians 
+     */
+    static ToDegrees(radians) {
+        // TODO there may be some ugly bugs here when we try to force a ugly
+        // decimal to being a nice degree value, like repeated applications
+        // of ToDegrees and ToRadians may lead to some ugly number skewing
+        // where the number wont return to its original value. Fingers crossed
+        // it doesnt I guess...
+        return (radians * 180) / Math.PI;
+    }
 }
 

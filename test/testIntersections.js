@@ -146,5 +146,23 @@ assert(() => findWallIntersect(new RayAngle(180), new Point2D(248, 96), testMap)
 // ray pointing up
 assert(() => findWallIntersect(new RayAngle(90), new Point2D(248, 96), testMap).GetX(), 248);
 assert(() => findWallIntersect(new RayAngle(90), new Point2D(248, 96), testMap).GetY(), 64);
+// Ray pointing top left
+assert(() => findWallIntersect(new RayAngle(135), new Point2D(96, 96), testMapFull).GetX(), 64);
+assert(() => findWallIntersect(new RayAngle(135), new Point2D(96, 96), testMapFull).GetY(), 64);
+const XCoordOfRayIntersectionPointingTopLeft = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
+assert(() => findWallIntersect(new RayAngle(120), new Point2D(96, 96), testMapFull).GetX(), XCoordOfRayIntersectionPointingTopLeft);
+assert(() => findWallIntersect(new RayAngle(120), new Point2D(96, 96), testMapFull).GetY(), 64);
+const YCoordOfRayIntersectionPointingTopLeft = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
+assert(() => findWallIntersect(new RayAngle(150), new Point2D(96, 96), testMapFull).GetX(), 64);
+assert(() => findWallIntersect(new RayAngle(150), new Point2D(96, 96), testMapFull).GetY(), YCoordOfRayIntersectionPointingTopLeft);
+// Ray pointing top right
+assert(() => findWallIntersect(new RayAngle(45), new Point2D(96, 96), testMapFull).GetX(), 128);
+assert(() => findWallIntersect(new RayAngle(45), new Point2D(96, 96), testMapFull).GetY(), 64);
+const XCoordOfRayIntersectionPointingTopRight = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
+assert(() => findWallIntersect(new RayAngle(60), new Point2D(96, 96), testMapFull).GetX(), XCoordOfRayIntersectionPointingTopRight);
+assert(() => findWallIntersect(new RayAngle(60), new Point2D(96, 96), testMapFull).GetY(), 64);
+const YCoordOfRayIntersectionPointingTopRight = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
+assert(() => findWallIntersect(new RayAngle(30), new Point2D(96, 96), testMapFull).GetX(), 64);
+assert(() => findWallIntersect(new RayAngle(30), new Point2D(96, 96), testMapFull).GetY(), YCoordOfRayIntersectionPointingTopRight);
 
 console.log("Finished Running Tests.");

@@ -18,7 +18,8 @@ export function isSolidWall(intX, intY, dirX, dirY, map) {
     let blockX = null;
     let blockY = null;
     if (intX % BLOCK_SIZE === 0 || intY % BLOCK_SIZE === 0) {
-        // were right on a gridline, so some unique logic has to happen.
+        // were right on a gridline, so some unique logic has to happen,
+        // beats me if I remember the reasoning for why its like this tho.
         blockX = Math.trunc(Math.trunc(intX / BLOCK_SIZE) + dirX / 2);
         blockY = Math.trunc(Math.trunc(intY / BLOCK_SIZE) + dirY / 2);
     } else {
@@ -28,10 +29,10 @@ export function isSolidWall(intX, intY, dirX, dirY, map) {
     if (blockX === null || blockY === null) {
         throw new Error("BlockX/BlockY variables not set.");
     }
-    // We can fix thiss later but im guessing that if we are out of bounds we dont have any solid walls.
+    // We can fix this later but im guessing that if we are out of bounds we dont have any solid walls.
     if (blockY > map.length || blockY < 0) return false;
     if (blockX > map[blockY]?.length || blockX < 0) return false;
-    
+
     const wallType = map[blockY][blockX];
     return wallType === 1;
 }
@@ -81,7 +82,7 @@ export function findWallIntersect(rayAngle, position, map) {
         directionToClampTo = DIRECTION.DOWN;
         tileStepX = 0;
         tileStepY = 1;
-    // There's no 360, since RayAngle wraps that back around to 0.
+        // There's no 360, since RayAngle wraps that back around to 0.
     } else if (angle === 0) {
         directionToClampTo = DIRECTION.RIGHT;
         tileStepX = 1;
@@ -122,30 +123,69 @@ export function findWallIntersect(rayAngle, position, map) {
             throw new Error("directionToClampTo is not set!");
         }
 
+        console.log(directionToClampTo);
+
         let exactPositionOfSolidWall = null;
         if (directionToClampTo === DIRECTION.DOWN) {
             // X has to be fixed.
             const resultingX = pointWhereSolidWallWasFound.GetX();
             // good luck figuring this out later
-            const resultingY = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetY())/BLOCK_SIZE) * BLOCK_SIZE;
+            const resultingY = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetY()) / BLOCK_SIZE) * BLOCK_SIZE;
 
             exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
         } else if (directionToClampTo === DIRECTION.RIGHT) {
-            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX())/BLOCK_SIZE) * BLOCK_SIZE;
+            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX()) / BLOCK_SIZE) * BLOCK_SIZE;
             const resultingY = pointWhereSolidWallWasFound.GetY();
 
             exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
         } else if (directionToClampTo === DIRECTION.LEFT) {
-            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX() - BLOCK_SIZE)/BLOCK_SIZE) * BLOCK_SIZE;
+            const resultingX = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetX() - BLOCK_SIZE) / BLOCK_SIZE) * BLOCK_SIZE;
             const resultingY = pointWhereSolidWallWasFound.GetY();
 
             exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
         } else if (directionToClampTo === DIRECTION.UP) {
             const resultingX = pointWhereSolidWallWasFound.GetX();
             // good luck figuring this out later
-            const resultingY = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetY() - BLOCK_SIZE)/BLOCK_SIZE) * BLOCK_SIZE;
+            const resultingY = Math.ceil(Math.abs(pointWhereSolidWallWasFound.GetY() - BLOCK_SIZE) / BLOCK_SIZE) * BLOCK_SIZE;
 
             exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
+        } else if (directionToClampTo === DIRECTION.UPLEFT) {
+            // angle is constrained to (90, 180) so we can do this.
+            const horizontalAngleRelativeTo90RCS = angle - 90;
+            const verticalAngleRelativeTo180RCS = 180 - angle;
+
+            const verticalDistanceToHorizontalWall = pointWhereSolidWallWasFound.GetY() % BLOCK_SIZE;
+            const horizontalDistanceToVerticalWall = pointWhereSolidWallWasFound.GetX() % BLOCK_SIZE;
+
+            // Calculating horizontal wall length:
+            const horizontalAngleInRadians = RayAngle.ToRadians(horizontalAngleRelativeTo90RCS)
+            const possibleLengthOfHorizontalWall = Math.tan(horizontalAngleInRadians) * verticalDistanceToHorizontalWall;
+
+            // vertical wall length:
+            const verticalAngleInRadians = RayAngle.ToRadians(verticalAngleRelativeTo180RCS);
+            const possibleLengthOfVerticalWall = Math.tan(verticalAngleInRadians) * horizontalDistanceToVerticalWall;
+
+            if (possibleLengthOfVerticalWall < possibleLengthOfHorizontalWall) {
+                // case 1: intersection at vert wall.
+                
+                // we substract instead of add beecause we are moving left and up.
+                const resultingX = pointWhereSolidWallWasFound.GetX() - horizontalDistanceToVerticalWall;
+                const resultingY = pointWhereSolidWallWasFound.GetY() - possibleLengthOfVerticalWall;
+
+                exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
+            } else  {
+                // case 2: either intersection at horiz wall or intersec at corner,
+                //         doesnt really matter for our purposes, will still be
+                //         drawn hopefully properly.
+
+                // we substract instead of add beecause we are moving left and up.
+                const resultingX = pointWhereSolidWallWasFound.GetX() - possibleLengthOfHorizontalWall;
+                const resultingY = pointWhereSolidWallWasFound.GetY() - verticalDistanceToHorizontalWall;
+
+                exactPositionOfSolidWall = new Point2D(resultingX, resultingY);
+            }
+        } else if (directionToClampTo === DIRECTION.UPRIGHT) {
+
         }
 
         if (!exactPositionOfSolidWall) {
@@ -164,6 +204,7 @@ export function findWallIntersect(rayAngle, position, map) {
  * coordinates of the camera in the block.
  */
 export function findGridPosition(cameraX, cameraY) {
+    // TODO: am I even using this anywhere????
     return { x: cameraX % BLOCK_SIZE, y: cameraY % BLOCK_SIZE };
 }
 
