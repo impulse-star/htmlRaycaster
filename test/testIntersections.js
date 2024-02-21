@@ -133,6 +133,8 @@ assert(() => isSolidWall(248, 224, 0, 1, testMap), true);
 
 
 // TESTING findWallIntersections
+// TODO add some yucky tests with the point being super close to one wall
+// and having a really steep angle.
 // Orthogonal Ray
 // ray pointing right
 assert(() => findWallIntersect(new RayAngle(), new Point2D(248, 96), testMap).GetX(), 256);
@@ -149,20 +151,20 @@ assert(() => findWallIntersect(new RayAngle(90), new Point2D(248, 96), testMap).
 // Ray pointing top left
 assert(() => findWallIntersect(new RayAngle(135), new Point2D(96, 96), testMapFull).GetX(), 64);
 assert(() => findWallIntersect(new RayAngle(135), new Point2D(96, 96), testMapFull).GetY(), 64);
-const XCoordOfRayIntersectionPointingTopLeft = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
-assert(() => findWallIntersect(new RayAngle(120), new Point2D(96, 96), testMapFull).GetX(), XCoordOfRayIntersectionPointingTopLeft);
+const XCoordOfRayIntersectionPointingTopLeftSteep = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
+assert(() => findWallIntersect(new RayAngle(120), new Point2D(96, 96), testMapFull).GetX(), XCoordOfRayIntersectionPointingTopLeftSteep);
 assert(() => findWallIntersect(new RayAngle(120), new Point2D(96, 96), testMapFull).GetY(), 64);
-const YCoordOfRayIntersectionPointingTopLeft = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
+const YCoordOfRayIntersectionPointingTopLeftShallow = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
 assert(() => findWallIntersect(new RayAngle(150), new Point2D(96, 96), testMapFull).GetX(), 64);
-assert(() => findWallIntersect(new RayAngle(150), new Point2D(96, 96), testMapFull).GetY(), YCoordOfRayIntersectionPointingTopLeft);
+assert(() => findWallIntersect(new RayAngle(150), new Point2D(96, 96), testMapFull).GetY(), YCoordOfRayIntersectionPointingTopLeftShallow);
 // Ray pointing top right
 assert(() => findWallIntersect(new RayAngle(45), new Point2D(96, 96), testMapFull).GetX(), 128);
 assert(() => findWallIntersect(new RayAngle(45), new Point2D(96, 96), testMapFull).GetY(), 64);
-const XCoordOfRayIntersectionPointingTopRight = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
-assert(() => findWallIntersect(new RayAngle(60), new Point2D(96, 96), testMapFull).GetX(), XCoordOfRayIntersectionPointingTopRight);
-assert(() => findWallIntersect(new RayAngle(60), new Point2D(96, 96), testMapFull).GetY(), 64);
-const YCoordOfRayIntersectionPointingTopRight = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
-assert(() => findWallIntersect(new RayAngle(30), new Point2D(96, 96), testMapFull).GetX(), 64);
-assert(() => findWallIntersect(new RayAngle(30), new Point2D(96, 96), testMapFull).GetY(), YCoordOfRayIntersectionPointingTopRight);
+const XCoordOfRayIntersectionPointingTopRightSteep = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
+assert(() => findWallIntersect(new RayAngle(30), new Point2D(96, 96), testMapFull).GetX(), XCoordOfRayIntersectionPointingTopRightSteep);
+assert(() => findWallIntersect(new RayAngle(30), new Point2D(96, 96), testMapFull).GetY(), 64);
+const YCoordOfRayIntersectionPointingTopRightShallow = 96 - Math.tan(RayAngle.ToRadians(30)) * 32;
+assert(() => findWallIntersect(new RayAngle(60), new Point2D(96, 96), testMapFull).GetX(), 128);
+assert(() => findWallIntersect(new RayAngle(60), new Point2D(96, 96), testMapFull).GetY(), YCoordOfRayIntersectionPointingTopRightShallow);
 
 console.log("Finished Running Tests.");
